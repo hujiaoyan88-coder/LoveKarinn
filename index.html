@@ -5,6 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>かりんちゃんの愛の告白</title>
   <style>
+    /* ハートが浮かぶエフェクト */
+.speech-bubble .heart {
+  position: absolute;
+  font-size: 1.4rem;
+  opacity: 0;
+  animation: floatHeart 1.2s ease forwards;
+  pointer-events: none;
+  filter: drop-shadow(0 0 5px rgba(255, 100, 150, 0.7));
+}
+
+@keyframes floatHeart {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-70px) scale(1.4);
+  }
+}
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
@@ -245,26 +265,39 @@
       }
     }
 
-    btn.addEventListener('click', async () => {
-      btn.disabled = true;
-      btn.textContent = 'きゅん…';
+btn.addEventListener('click', async () => {
+  btn.disabled = true;
+  btn.textContent = 'きゅん…';
 
-      const msg = messages[Math.floor(Math.random() * messages.length)];
-      messageEl.innerHTML = msg;
-      messageEl.classList.add('shake');
+  const msg = messages[Math.floor(Math.random() * messages.length)];
+  messageEl.innerHTML = msg;
+  messageEl.classList.add('shake');
 
-      try {
-        const res = await fetch(`https://countapi.mileshilliard.com/api/v1/hit/${COUNTER_KEY}`);
-        const data = await res.json();
-        countEl.textContent = data.value;
-      } catch (e) {}
+  // ハートエフェクト追加
+  for (let i = 0; i < 6; i++) {
+    setTimeout(() => {
+      const heart = document.createElement('div');
+      heart.className = 'heart';
+      heart.textContent = ['♡','💗','💖','💕','💓','🌸'][Math.floor(Math.random() * 6)];
+      heart.style.left = Math.random() * 70 + 15 + '%';
+      heart.style.bottom = '15px';
+      messageEl.appendChild(heart);
+      setTimeout(() => heart.remove(), 1200);
+    }, i * 120);
+  }
 
-      setTimeout(() => {
-        messageEl.classList.remove('shake');
-        btn.disabled = false;
-        btn.textContent = 'かりんちゃんの告白をもらう';
-      }, 700);
-    });
+  try {
+    const res = await fetch(`https://countapi.mileshilliard.com/api/v1/hit/${COUNTER_KEY}`);
+    const data = await res.json();
+    countEl.textContent = data.value;
+  } catch (e) {}
+
+  setTimeout(() => {
+    messageEl.classList.remove('shake');
+    btn.disabled = false;
+    btn.textContent = 'かりんちゃんの告白をもらう';
+  }, 700);
+});
 
     loadCount();
   </script>
