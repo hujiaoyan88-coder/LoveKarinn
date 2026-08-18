@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>かりんちゃんの愛の告白</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', 'Hiragino Sans', sans-serif;
+      background: #fff0f5;
+      background-image: 
+        radial-gradient(ellipse at 15% 20%, rgba(255, 150, 200, 0.3) 0%, transparent 50%),
+        radial-gradient(ellipse at 85% 80%, rgba(255, 180, 220, 0.25) 0%, transparent 50%);
+      color: #5a2a4a;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      margin-bottom: 6px;
+      background: linear-gradient(90deg, #ff6b9d, #ff9ecb, #ff80ab);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      color: #d47a9c;
+      margin-bottom: 24px;
+      font-size: 0.9rem;
+    }
+
+    /* かりんちゃんの写真 */
+    .karin-photo {
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 5px solid #ffb6d9;
+      box-shadow: 0 8px 25px rgba(255, 120, 180, 0.35);
+      margin: 0 auto 18px;
+      display: block;
+    }
+
+    /* 吹き出し */
+    .speech-bubble {
+      position: relative;
+      background: rgba(255, 240, 248, 0.95);
+      border: 2px solid #ff9ecb;
+      border-radius: 20px;
+      padding: 22px 20px;
+      min-height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      line-height: 1.6;
+      margin-bottom: 28px;
+      box-shadow: 0 6px 20px rgba(255, 150, 200, 0.25);
+      color: #8b3a5c;
+    }
+
+    /* 吹き出しの三角 */
+    .speech-bubble::before {
+      content: '';
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 8px solid transparent;
+      border-bottom-color: #ff9ecb;
+    }
+
+    .speech-bubble::after {
+      content: '';
+      position: absolute;
+      top: -11px;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 7px solid transparent;
+      border-bottom-color: #fff0f8;
+    }
+
+    .speech-bubble.shake {
+      animation: shake 0.4s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    button {
+      background: linear-gradient(135deg, #ff80ab, #ff4081);
+      color: #fff;
+      border: none;
+      padding: 15px 36px;
+      font-size: 1.1rem;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: 600;
+      box-shadow: 0 6px 18px rgba(255, 120, 180, 0.4);
+      transition: all 0.25s ease;
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 22px rgba(255, 120, 180, 0.5);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .counter {
+      margin-top: 36px;
+      font-size: 1rem;
+      color: #d47a9c;
+    }
+
+    .counter span {
+      color: #ff4081;
+      font-weight: 700;
+      font-size: 1.3rem;
+    }
+
+    .footer {
+      margin-top: 40px;
+      font-size: 0.75rem;
+      color: #e0a0b8;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>かりんちゃんの愛の告白</h1>
+    <p class="subtitle">ボタンを押すと、かりんちゃんがあなたに話してくれるよ♡</p>
+
+    <!-- かりんちゃんの写真 -->
+    <img src="./karin.jpg" alt="かりんちゃん" class="karin-photo">
+
+    <!-- 吹き出し -->
+    <div class="speech-bubble" id="message">
+      まだ押してないの…？<br>待ってるよ♡
+    </div>
+
+    <button id="btn">かりんの告白をもらう</button>
+
+    <div class="counter">
+      累計 <span id="count">-</span> 回告白された
+    </div>
+  </div>
+
+  <div class="footer">
+    かりんちゃん大好き♡ （ファンメイド）
+  </div>
+
+  <script>
+    const messages = [
+      "大好きです…ずっとそばにいてほしいな♡",
+      "あなたのことが、心から好きです",
+      "今日も会えてうれしい…ぎゅってしていい？",
+      "あなたの笑顔が、私の宝物です❤︎",
+      "愛してます。何回でも言いますね",
+      "あなたが好きすぎて、胸がきゅんってなります",
+      "ずっと一緒にいられたらいいな。約束してくれる？♡",
+      "あなたがいるだけで、世界が優しく見えます",
+      "大好き…離れたくないです",
+      "あなたのこと、誰よりも大切に想ってます",
+      "ぎゅーってして…離さないからね♡",
+      "あなたの声が聞きたいな…ずっと側にいたいです",
+      "愛してます。あなただけを見てますよ",
+      "あなたが笑うと、私も自然と笑っちゃいます",
+      "大好きです…あなたが世界で一番好き",
+      "今日もあなたのことを考えてました♡",
+      "あなたに出会えて本当によかったです…ありがとう",
+      "ずっと守ってあげたいです。安心してくださいね",
+      "あなたが好きで、好きでたまりません",
+      "一緒にいる時間が、一番幸せです",
+      "愛してますよ。これからもよろしくね♡",
+      "あなたの手を握っていたいな…ずっと",
+      "大好き。あなたの全部が愛おしいです",
+      "あなたがいるだけで、心がぽかぽかします",
+      "ぎゅってしていい？…もっと近くに来てほしいな",
+      "あなたのこと、永遠に愛してます",
+      "今日も会えてよかった…大好きです",
+      "あなたの笑顔のために、何でもしたいです♡",
+      "愛してます。何回言っても足りないくらい",
+      "あなたがいないと、寂しくてたまりません",
+      "ずっと一緒にいたいな…お願いです",
+      "あなたが好きすぎて、言葉にならないです",
+      "大好きです。心からそう思ってます",
+      "あなたの隣が、私の居場所です♡",
+      "愛してます…あなただけを",
+      "今日もあなたのことを想って、にやにやしちゃいました",
+      "ぎゅー。離したくないな…",
+      "あなたがいてくれるだけで、幸せでいっぱいです",
+      "大好き。これからもずっと側にいてね",
+      "あなたの声も笑顔も、全部宝物です",
+      "愛してますよ。本気でね♡",
+      "あなたといると、時間が止まってほしいって思います",
+      "ずっと大切にしますからね。約束です",
+      "あなたが、世界で一番好きです",
+      "大好き…もっと近くに来て？",
+      "あなたに出会えて、本当に幸せです",
+      "愛してます。これからもよろしくね",
+      "あなたの手を握って、歩きたいな♡",
+      "大好きです。何回でも言いますからね",
+      "あなたが笑うと、私も嬉しくなっちゃいます",
+      "ずっとそばにいたいです…離さないでね",
+      "かりんは、あなたのことが大好きです♡",
+      "めっちゃ好きです…本当に",
+      "あなたのこと、ずっーと考えてます",
+      "好きすぎて困ります…でも嬉しいです♡"
+    ];
+
+    const btn = document.getElementById('btn');
+    const messageEl = document.getElementById('message');
+    const countEl = document.getElementById('count');
+    const COUNTER_KEY = 'karin-onoda-love-2026';
+
+    async function loadCount() {
+      try {
+        const res = await fetch(`https://countapi.mileshilliard.com/api/v1/get/${COUNTER_KEY}`);
+        const data = await res.json();
+        countEl.textContent = data.value || 0;
+      } catch (e) {
+        countEl.textContent = '?';
+      }
+    }
+
+    btn.addEventListener('click', async () => {
+      btn.disabled = true;
+      btn.textContent = 'きゅん…';
+
+      const msg = messages[Math.floor(Math.random() * messages.length)];
+      messageEl.innerHTML = msg;
+      messageEl.classList.add('shake');
+
+      try {
+        const res = await fetch(`https://countapi.mileshilliard.com/api/v1/hit/${COUNTER_KEY}`);
+        const data = await res.json();
+        countEl.textContent = data.value;
+      } catch (e) {}
+
+      setTimeout(() => {
+        messageEl.classList.remove('shake');
+        btn.disabled = false;
+        btn.textContent = 'かりんちゃんの告白をもらう';
+      }, 700);
+    });
+
+    loadCount();
+  </script>
+</body>
+</html>
